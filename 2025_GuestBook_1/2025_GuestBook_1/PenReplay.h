@@ -5,6 +5,9 @@
 #include <mutex>
 #include <atomic>
 
+#define TIME_INTERVAL 50;
+#define TIME_TIMER 100;
+
 class PenReplay
 {
 private:
@@ -18,6 +21,7 @@ private:
 
 public:
 	void addCoord(const Pen& pen);
+	void replayStart();
 };
 
 

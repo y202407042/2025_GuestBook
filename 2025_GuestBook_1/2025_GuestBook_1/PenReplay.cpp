@@ -1,10 +1,12 @@
 #include "PenReplay.h"
 
-void PenReplay::addCoord(int x, int y)
+void PenReplay::addCoord(const Pen& pen)
 {
-	if (!isReplaying())
+	if (isReplaying.load())
 	{
-		replayMutex.lock();
-
+		return;
 	}
+	std::lock_guard<std::mutex> lock(mtx);
+	originalBuffer.push_back(pen);
 }
+

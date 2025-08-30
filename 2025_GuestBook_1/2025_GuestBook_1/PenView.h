@@ -19,13 +19,17 @@ class PenView
 {
 private:
 	HPEN normalPen;
-	HBRUSH brushPen;
-	HBRUSH sprayPen;
-	HBRUSH selectPen;
+	HPEN brushPen;
+	HPEN sprayPen;
+	HPEN selectPen;
+	int currentPenType;
 
 public:
+	PenView();
+	~PenView();
 	void getChangePen(WPARAM wParam);
 	void switchPen(int type);
-
+	HPEN GetCurrentPen(); // 누락된 메서드 추가
+	int GetCurrentPenType(); // 현재 펜 타입 반환 메서드 추가
 };
 

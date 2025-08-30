@@ -1,5 +1,19 @@
 #include "PenView.h"
-
+#include "windows.h"
+PenView::PenView()
+{
+    normalPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0)); /// 만년필 효과처럼 제작 예정
+    /// 스프레이 기능은 별도의 창을 만들어서 넣어야 한다고 함.
+    /// sprayPen = ;
+    currentPenType = PEN_TYPE_NORMAL;;
+}
+PenView::~PenView() // 소멸자 구현 추가
+{
+    DeleteObject(normalPen);
+    DeleteObject(brushPen);
+    DeleteObject(sprayPen);
+}
 void PenView::getChangePen(WPARAM wParam)  // message 매개변수 제거
 {
     int commandId = LOWORD(wParam);  // 직접 commandId 추출
@@ -22,6 +36,31 @@ void PenView::getChangePen(WPARAM wParam)  // message 매개변수 제거
 
 void PenView::switchPen(int type)
 {
-    selectPen = (HBRUSH)type;
+    currentPenType = type; // 현재 펜 타입 저장
+
+    switch (type) { // 올바른 펜 선택 로직으로 변경
+    case PEN_TYPE_NORMAL:
+        selectPen = normalPen;
+        break;
+    case PEN_TYPE_BRUSH:
+        selectPen = brushPen;
+        break;
+    case PEN_TYPE_SPRAY:
+        selectPen = sprayPen;
+        break;
+    default:
+        selectPen = normalPen;
+        break;
+    }
 }
+HPEN PenView::GetCurrentPen() // 누락된 메서드 구현
+{
+    return selectPen;
+}
+
+int PenView::GetCurrentPenType() // 현재 펜 타입 반환 메서드 구현
+{
+    return currentPenType;
+}
+
 

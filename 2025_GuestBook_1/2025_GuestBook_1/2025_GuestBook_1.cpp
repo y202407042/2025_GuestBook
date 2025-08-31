@@ -4,7 +4,7 @@
 #include "framework.h"
 #include "2025_GuestBook_1.h"
 #include "ColorPicker.h"
-
+#include "ColorManager.h"
 #define MAX_LOADSTRING 100
 #define ID_COLOR_BUTTON 1001 // 버튼 컨트롤 ID
 
@@ -13,8 +13,9 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
-ColorPicker g_colorPicker;                    // 전역 ColorPicker 객체
-COLORREF g_penColor = RGB(0, 0, 0);           // 선택된 펜 색상
+ColorPicker g_colorPicker;
+ColorManager g_colorManager;       // [추가]
+DrawingManager g_drawingManager(&g_penView); // [추가]
 
 
 // 전역 그리기 상태
@@ -150,7 +151,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_COMMAND:
         if (LOWORD(wParam) == ID_COLOR_BUTTON) {
-            g_penColor = g_colorPicker.Show(hWnd);  // 색상 선택
+            COLORREF newColor = g_colorPicker.Show(hWnd);
+            g_colorManager.SetColor(newColor);   // [추가]       
         }
         break;
         

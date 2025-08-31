@@ -3,13 +3,28 @@
 
 #include "framework.h"
 #include "2025_GuestBook_1.h"
+#include "ColorPicker.h"
 
 #define MAX_LOADSTRING 100
+#define ID_COLOR_BUTTON 1001 // 버튼 컨트롤 ID
+
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+ColorPicker g_colorPicker;                    // 전역 ColorPicker 객체
+COLORREF g_penColor = RGB(0, 0, 0);           // 선택된 펜 색상
+
+
+// 전역 그리기 상태
+bool isDrawing = false;
+int lastX = 0, lastY = 0;
+
+// 캔버스 영역 정의
+RECT g_logoRect = { 0, 0, 800, 40 };
+RECT g_toolbarRect = { 0, 40, 800, 80 };
+RECT g_canvasRect = { 20, 100, 780, 580 };
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -125,21 +140,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+        // 색상 선택 버튼 생성
+    case WM_CREATE:
+        CreateWindowW(L"button", L"색상 선택",
+            WS_VISIBLE | WS_CHILD,
+            600, 50, 100, 30,   // 툴바 위치 기준 위치 조절
+            hWnd, (HMENU)ID_COLOR_BUTTON, hInst, nullptr);
+        break;
+
     case WM_COMMAND:
+        if (LOWORD(wParam) == ID_COLOR_BUTTON) {
+            g_penColor = g_colorPicker.Show(hWnd);  // 색상 선택
+        }
+        break;
+        
+        
+    case WM_MOUSEMOVE:
+        if (isDrawing)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
+            int x = LOWORD(lParam);
+            int y = HIWORD(lParam);
+
+            if (PtInRect(&g_canvasRect, { x, y }))
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
+                HDC hdc = GetDC(hWnd);
+                HPEN hPen = CreatePen(PS_SOLID, 2, g_penColor);  // 선택된 색상 사용
+                HGDIOBJ oldPen = SelectObject(hdc, hPen);
+
+                MoveToEx(hdc, lastX, lastY, NULL);
+                LineTo(hdc, x, y);
+
+                SelectObject(hdc, oldPen);
+                DeleteObject(hPen);
+                ReleaseDC(hWnd, hdc);
             }
+
+            lastX = x;
+            lastY = y;
         }
         break;
     case WM_PAINT:

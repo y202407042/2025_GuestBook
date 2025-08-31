@@ -27,9 +27,24 @@
     <ClInclude Include="2025_GuestBook_1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="FileSave.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoad.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoad.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSave.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

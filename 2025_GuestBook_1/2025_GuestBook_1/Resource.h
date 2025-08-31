@@ -12,6 +12,20 @@
 #define IDI_MY2025GUESTBOOK1			107
 #define IDI_SMALL				108
 #define IDC_MY2025GUESTBOOK1			109
+
+// 펜 상수들 200번대
+#define IDC_BTN_PEN        201
+#define IDC_BTN_SPRAY      202
+#define IDC_BTN_COLOR      203
+#define IDC_BTN_BRUSH      204
+
+// Saveload 상수들 300번대
+#define IDC_BTN_SAVE       301
+#define IDC_BTN_LOAD       302
+
+// Replay 상수들 400번대
+#define IDC_BTN_REPLAY     401
+
 #define IDC_MYICON				2
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1

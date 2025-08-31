@@ -128,12 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="2025_GuestBook_1.h" />
+    <ClInclude Include="ButtonTool.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="WindowTool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp" />
+    <ClCompile Include="ButtonTool.cpp" />
+    <ClCompile Include="WindowTool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2025_GuestBook_1.rc" />

@@ -27,9 +27,21 @@
     <ClInclude Include="2025_GuestBook_1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="WindowTool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonTool.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowTool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonTool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

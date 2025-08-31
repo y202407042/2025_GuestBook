@@ -3,8 +3,12 @@
 
 #include "framework.h"
 #include "2025_GuestBook_1.h"
+#include "resource.h"
+#include "WindowTool.h"
 
 #define MAX_LOADSTRING 100
+
+static WindowTool* gWindowTool = nullptr;
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -25,9 +29,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: 여기에 코드를 입력합니다.
-
-    // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_MY2025GUESTBOOK1, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
@@ -54,9 +55,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     return (int) msg.wParam;
 }
-
-
-
 //
 //  함수: MyRegisterClass()
 //
@@ -93,22 +91,17 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
 //        주 프로그램 창을 만든 다음 표시합니다.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
+    hInst = hInstance; // 기존 전역에 저장
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
+    /// WindowTool로 메인 윈도우 생성/표시 (템플릿 CreateWindowW 대체)
+    gWindowTool = new WindowTool(hInstance);
+    if (!gWindowTool->createMainWindow(1000, 700)) {
+        return FALSE;
+    }
+    gWindowTool->showWindow(nCmdShow);
+    return TRUE;
 }
 
 //
@@ -150,7 +143,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+        /// WM_DESTROY에서 gWindowTool 삭제 고려
     case WM_DESTROY:
+        if (gWindowTool) { delete gWindowTool; gWindowTool = nullptr; }
         PostQuitMessage(0);
         break;
     default:

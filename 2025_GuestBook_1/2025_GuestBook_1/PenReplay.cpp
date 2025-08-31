@@ -2,6 +2,7 @@
 
 void PenReplay::addCoord(const Pen& pen)
 {
+	/// 펜값 저장
 	if (isReplaying.load())
 	{
 		return;
@@ -21,4 +22,14 @@ void PenReplay::replayStart()
 	isReplaying.store(true);
 	replayBuffer = originalBuffer;
 
+}
+
+void PenReplay::replayPause()
+{
+	/// 일시정지
+}
+
+void PenReplay::replayThread()
+{
+	/// 리플레이용 스레드
 }

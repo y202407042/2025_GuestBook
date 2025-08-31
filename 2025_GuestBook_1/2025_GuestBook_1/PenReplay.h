@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <mutex>
 #include <atomic>
+#include <thread>
 
 #define TIME_INTERVAL 50;
 #define TIME_TIMER 100;
@@ -22,6 +23,8 @@ private:
 public:
 	void addCoord(const Pen& pen);
 	void replayStart();
+	void replayPause();
+	void replayThread();
 };
 
 

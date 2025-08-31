@@ -32,4 +32,11 @@ void PenReplay::replayPause()
 void PenReplay::replayThread()
 {
 	/// 리플레이용 스레드
+	if (originalBuffer.empty() || isReplaying.load())
+	{
+		return;
+	}
+	std::lock_guard<std::mutex> lock(mtx);
+	isReplaying.store(true);
+
 }

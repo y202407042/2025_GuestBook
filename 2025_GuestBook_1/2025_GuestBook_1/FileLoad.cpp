@@ -1,31 +1,50 @@
 #include "FileLoad.h"
-#include <commdlg.h>
-#include <fstream>
 
-bool FileLoad::LoadFromFile(HWND hWnd, std::vector<DrawPoint>& outPoints) {
-    wchar_t filePath[MAX_PATH] = { 0 };
+// 불러오기 버튼 눌렀을 때 실행
+bool FileLoad::Run(HWND hWnd) {
+    wchar_t filePath[MAX_PATH] = L"";
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
+    // 파일 경로 선택
+    if (!GetOpenPath(hWnd, filePath, MAX_PATH))
+        return false;
+
+    // 화면에 그림
+    return LoadBitmapToWindow(hWnd, filePath);
+}
+
+// 파일 열기 대화상자 열기
+bool FileLoad::GetOpenPath(HWND hWnd, wchar_t* path, DWORD size) {
+    OPENFILENAMEW ofn = { 0 };
+    ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = hWnd;
-    ofn.lpstrFilter = L"Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
-    ofn.lpstrFile = filePath;
-    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrFile = path;
+    ofn.nMaxFile = size;
+    ofn.lpstrFilter = L"BMP 파일\0*.bmp\0모든 파일\0*.*\0";
+    ofn.nFilterIndex = 1;
     ofn.Flags = OFN_FILEMUSTEXIST;
-    ofn.lpstrDefExt = L"txt";
 
-    if (GetOpenFileName(&ofn)) {
-        std::wifstream in(filePath);
-        if (!in.is_open()) return false;
+    path[0] = '\0';
 
-        outPoints.clear();
-        DrawPoint pt;
-        while (in >> pt.x >> pt.y >> pt.penType) {
-            outPoints.push_back(pt);
-        }
+    return GetOpenFileNameW(&ofn);
+}
 
-        in.close();
-        return true;
-    }
+// 선택한 비트맵을 윈도우에 그리기
+bool FileLoad::LoadBitmapToWindow(HWND hWnd, const wchar_t* path) {
+    HBITMAP hBitmap = (HBITMAP)LoadImageW(NULL, path, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    if (!hBitmap) return false;
 
-    return false;
+    HDC hdc = GetDC(hWnd);
+    HDC memDC = CreateCompatibleDC(hdc);
+    HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, hBitmap);
+
+    BITMAP bmp;
+    GetObject(hBitmap, sizeof(BITMAP), &bmp);
+    BitBlt(hdc, 0, 0, bmp.bmWidth, bmp.bmHeight, memDC, 0, 0, SRCCOPY);
+
+    SelectObject(memDC, oldBitmap);
+    DeleteDC(memDC);
+    ReleaseDC(hWnd, hdc);
+    DeleteObject(hBitmap);
+
+    return true;
 }

@@ -3,7 +3,7 @@
 PenView::PenView()
 {
     normalPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
-    brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0)); /// 만년필 효과처럼 제작 예정
+    brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
     /// 스프레이 기능은 별도의 창을 만들어서 넣어야 한다고 함.
     /// sprayPen = ;
     currentPenType = PEN_TYPE_NORMAL;;
@@ -53,12 +53,12 @@ void PenView::switchPen(int type)
         break;
     }
 }
-HPEN PenView::GetCurrentPen() // 누락된 메서드 구현
+HPEN PenView::getCurrentPen() 
 {
     return selectPen;
 }
 
-int PenView::GetCurrentPenType() // 현재 펜 타입 반환 메서드 구현
+int PenView::getCurrentPenType() 
 {
     return currentPenType;
 }

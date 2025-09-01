@@ -29,7 +29,7 @@ public:
 	~PenView();
 	void getChangePen(WPARAM wParam);
 	void switchPen(int type);
-	HPEN GetCurrentPen(); // 누락된 메서드 추가
-	int GetCurrentPenType(); // 현재 펜 타입 반환 메서드 추가
+	HPEN getCurrentPen();
+	int getCurrentPenType();
 };
 

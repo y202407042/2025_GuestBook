@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "PenView.h"
 
-class DrawingManager {
+class DrawingManager: public DrawPoints {
 private:
     POINT lastPoint;
     bool isDrawing;

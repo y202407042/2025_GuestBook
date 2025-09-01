@@ -1,4 +1,5 @@
 #include "DrawingManger.h"
+#include "DrawPoints.h"
 #include <cmath>
 
 DrawingManager::DrawingManager(PenView* pv) // 생성자 구현 추가
@@ -25,6 +26,8 @@ void DrawingManager::startDrawing(HDC hdc, int x, int y) {
     lastPoint.x = x;
     lastPoint.y = y;
 
+    /// 벡터에 좌표 저장
+    DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
     SelectObject(hdc, oldPen);
 }
 
@@ -39,6 +42,9 @@ void DrawingManager::continueDrawing(HDC hdc, int x, int y) {
         HPEN oldPen = (HPEN)SelectObject(hdc, penView->getCurrentPen());
         MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
         LineTo(hdc, x, y);
+
+        /// 벡터에 좌표 저장
+        DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
         SelectObject(hdc, oldPen);
     }
 
@@ -54,8 +60,14 @@ void DrawingManager::endDrawing(HDC hdc, int x, int y) {
     HPEN oldPen = (HPEN)SelectObject(hdc, penView->getCurrentPen());
     MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
     LineTo(hdc, x, y);
+
+    /// 벡터에 좌표 저장
+    DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
     SelectObject(hdc, oldPen);
 }
+
+/// 여기는 백터로 좌표 저장하는거 아직 미완성. 감이 안잡힘.
+
 void DrawingManager::drawFountainPenStroke(HDC hdc, int x, int y) {
     DWORD currentTime = GetTickCount64();
 
@@ -99,24 +111,4 @@ void DrawingManager::drawVariableWidthLine(HDC hdc, int x1, int y1, int x2, int 
     MoveToEx(hdc, x1, y1, NULL);
     LineTo(hdc, x2, y2);
    
-    /// 굳이 필요없는 거 같음 
-    /*
-    // 잉크 번짐 효과를 위한 추가 점들
-    if (width > 3.0f) {
-        // 굵은 선일 때 주변에 연한 점들 추가
-        HPEN inkPen = CreatePen(PS_SOLID, 1, RGB(100, 100, 200)); // 연한 파란색
-        SelectObject(hdc, inkPen);
-
-        // 주변에 연한 점들 그리기
-        SetPixel(hdc, x2 - 1, y2, RGB(150, 150, 220));
-        SetPixel(hdc, x2 + 1, y2, RGB(150, 150, 220));
-        SetPixel(hdc, x2, y2 - 1, RGB(150, 150, 220));
-        SetPixel(hdc, x2, y2 + 1, RGB(150, 150, 220));
-
-        DeleteObject(inkPen);
-    }
-
-    SelectObject(hdc, oldPen);
-    DeleteObject(variablePen);
-    */
 }

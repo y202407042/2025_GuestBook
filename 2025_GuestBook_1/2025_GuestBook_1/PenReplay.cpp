@@ -36,7 +36,11 @@ void PenReplay::replayThread()
 	{
 		return;
 	}
-	std::lock_guard<std::mutex> lock(mtx);
-	isReplaying.store(true);
+
+	rpThread = std::thread([this]() {
+		std::lock_guard<std::mutex> lock(mtx);
+		isReplaying.store(true);
+
+		});
 
 }

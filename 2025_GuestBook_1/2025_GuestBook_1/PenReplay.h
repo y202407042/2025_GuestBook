@@ -16,9 +16,7 @@ private:
 	std::vector<Pen> replayBuffer;
 	std::mutex mtx;
 	std::atomic<bool> isReplaying{ false };
-	HDC memoryDC = nullptr;		/// 메모리 DC
-	HBITMAP backBufferBitmap = nullptr;	/// 백버퍼 비트맵
-	HBITMAP replayBitmap = nullptr;	/// 복원용 비트맵
+	std::thread rpThread;
 
 public:
 	void addCoord(const Pen& pen);

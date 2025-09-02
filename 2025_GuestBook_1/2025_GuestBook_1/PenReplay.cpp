@@ -18,11 +18,12 @@ void PenReplay::replayStart()
 		return;
 	}
 
-	rpThread = std::thread([this]() {
-		std::lock_guard<std::mutex> lock(mtx);
-		isReplaying.store(true);
-		replayBuffer = originalBuffer;
+	isReplaying.store(true);
+	std::lock_guard<std::mutex> lock(mtx);
 
+	rpThread = std::thread([this]() {
+		replayBuffer = originalBuffer;
+		
 		});
 
 }

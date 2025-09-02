@@ -15,7 +15,7 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 ColorPicker g_colorPicker;
 ColorManager g_colorManager;       // [추가]
-DrawingManager g_drawingManager(&g_penView); // [추가]
+
 
 
 // 전역 그리기 상태
@@ -141,6 +141,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+        // 임시펜
+    case WM_LBUTTONDOWN:
+        isDrawing = true;
+        lastX = LOWORD(lParam);
+        lastY = HIWORD(lParam);
+        break;
+        // 임시펜
+    case WM_LBUTTONUP:
+        isDrawing = false;
+        break;
+
         // 색상 선택 버튼 생성
     case WM_CREATE:
         CreateWindowW(L"button", L"색상 선택",
@@ -166,7 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (PtInRect(&g_canvasRect, { x, y }))
             {
                 HDC hdc = GetDC(hWnd);
-                HPEN hPen = CreatePen(PS_SOLID, 2, g_penColor);  // 선택된 색상 사용
+                HPEN hPen = CreatePen(PS_SOLID, 2, g_colorManager.GetColor()); // 선택된 색상 사용
                 HGDIOBJ oldPen = SelectObject(hdc, hPen);
 
                 MoveToEx(hdc, lastX, lastY, NULL);

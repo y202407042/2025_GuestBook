@@ -3,7 +3,7 @@
 
 class ColorManager {
 private:
-    COLORREF currentColor;  // 현재 선택된 색상
+    COLORREF currentColor;  
 
 public:
     ColorManager();

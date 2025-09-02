@@ -18,7 +18,7 @@ void ButtonTool::move(int x, int y, int width, int height) {
         MoveWindow(hWnd, x, y, width, height, TRUE);
     }
 }
-
+/// 아이콘 들어갈 때 코드 적용
 //void ButtonTool::setIcon(HICON icon) {
 //    if (hWnd && icon) {
 //        SendMessage(hWnd, BM_SETIMAGE, IMAGE_ICON, (LPARAM)icon);

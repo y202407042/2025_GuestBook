@@ -7,8 +7,10 @@ DrawingManager::DrawingManager(PenView* pv) // 생성자 구현 추가
 {
     lastPoint.x = 0;
     lastPoint.y = 0;
-    lastTime = 0;
+    /* 브러쉬 기능 비활성화
     currentWidth = 2.0f;
+    lastTime = 0;
+    */
 }
 
 DrawingManager::~DrawingManager() // 소멸자 구현 추가
@@ -27,13 +29,13 @@ void DrawingManager::startDrawing(HDC hdc, int x, int y) {
     lastPoint.y = y;
 
     /// 벡터에 좌표 저장
-    DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
+    /// DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
     SelectObject(hdc, oldPen);
 }
 
 void DrawingManager::continueDrawing(HDC hdc, int x, int y) {
     if (!isDrawing) return;
-
+    /* 브러쉬 기능 비활성화, 이후 아래 코드 삭제 후 다시; 활성화
     if (penView->getCurrentPenType() == PEN_TYPE_BRUSH) {
         drawFountainPenStroke(hdc, x, y);
     }
@@ -44,9 +46,19 @@ void DrawingManager::continueDrawing(HDC hdc, int x, int y) {
         LineTo(hdc, x, y);
 
         /// 벡터에 좌표 저장
-        DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
+        /// DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
         SelectObject(hdc, oldPen);
     }
+    */
+
+    // 기존 그리기 로직
+    HPEN oldPen = (HPEN)SelectObject(hdc, penView->getCurrentPen());
+    MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
+    LineTo(hdc, x, y);
+
+    /// 벡터에 좌표 저장
+    /// DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
+    SelectObject(hdc, oldPen);
 
     lastPoint.x = x;
     lastPoint.y = y;
@@ -62,12 +74,12 @@ void DrawingManager::endDrawing(HDC hdc, int x, int y) {
     LineTo(hdc, x, y);
 
     /// 벡터에 좌표 저장
-    DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
+    /// DrawPoints::saveToPoint(lastPoint.x, lastPoint.x, currentWidth);
     SelectObject(hdc, oldPen);
 }
 
 /// 여기는 백터로 좌표 저장하는거 아직 미완성. 감이 안잡힘.
-
+/* 브러쉬 기능 비활성화
 void DrawingManager::drawFountainPenStroke(HDC hdc, int x, int y) {
     DWORD currentTime = GetTickCount64();
 
@@ -112,3 +124,4 @@ void DrawingManager::drawVariableWidthLine(HDC hdc, int x1, int y1, int x2, int 
     LineTo(hdc, x2, y2);
    
 }
+*/

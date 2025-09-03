@@ -1,12 +1,12 @@
 #pragma once
 #include <windows.h>
 #include "PenView.h"
+#include "DrawPoints.h"
 
-class DrawingManager//: public DrawPoints 
+class DrawingManager: public DrawPoints 
 {
 private:
     POINT lastPoint;
-    bool isDrawing;
     PenView* penView;
     /* 펜 브러쉬 기능 비활성화
     DWORD lastTime;        // 마지막 그리기 시간
@@ -16,11 +16,13 @@ private:
     */
 
 public:
+    BOOL isDrawing;
     DrawingManager(PenView* pv);
     ~DrawingManager();
-    void startDrawing(HDC hdc, int x, int y);
+    void testDrawing(HDC hdc, int x, int y);
+    /*void startDrawing(HDC hdc, int x, int y);
     void continueDrawing(HDC hdc, int x, int y);
-    void endDrawing(HDC hdc, int x, int y);
+    void endDrawing(HDC hdc, int x, int y);*/
 
     /* 펜 브러쉬 기능 비활성화
     void drawFountainPenStroke(HDC hdc, int x, int y);

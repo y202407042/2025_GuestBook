@@ -8,12 +8,12 @@ void PenReplay::addCoord(const Pen& pen)
 		return;
 	}
 	std::lock_guard<std::mutex> lock(mtx);
-	originalBuffer.push_back(pen);
+	/// replayBuffer = pen.getPoints();
 }
 
 void PenReplay::replayStart()
 {
-	if (originalBuffer.empty() || isReplaying.load())
+	if (replayBuffer.empty() || isReplaying.load())
 	{
 		return;
 	}
@@ -22,8 +22,14 @@ void PenReplay::replayStart()
 	std::lock_guard<std::mutex> lock(mtx);
 
 	rpThread = std::thread([this]() {
-		replayBuffer = originalBuffer;
-		
+		for (const auto& p : replayBuffer)
+		{
+			if (!isReplaying.load())
+			{
+				break;
+			}
+
+		}
 		});
 
 }

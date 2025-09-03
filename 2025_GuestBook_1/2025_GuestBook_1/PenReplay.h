@@ -12,11 +12,10 @@
 class PenReplay
 {
 private:
-	std::vector<Pen> originalBuffer;
 	std::vector<Pen> replayBuffer;
+	std::thread rpThread;
 	std::mutex mtx;
 	std::atomic<bool> isReplaying{ false };
-	std::thread rpThread;
 
 public:
 	void addCoord(const Pen& pen);

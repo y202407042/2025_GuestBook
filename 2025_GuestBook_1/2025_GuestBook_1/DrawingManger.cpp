@@ -2,12 +2,21 @@
 #include "DrawPoints.h"
 #include <cmath>
 
-DrawingManager::DrawingManager(PenView* pv) // 생성자 구현 추가
+DrawingManager::DrawingManager(PenView* pv, HWND hWnd) // 생성자 구현 추가
 	: penView(pv)
 {
 	lastPoint.x = 0;
 	lastPoint.y = 0;
 	isDrawing = false;
+
+	/// WM_MOUSELEAVE를 사용하기 위한 구조체 변수 추가
+	tme.cbSize = sizeof(TRACKMOUSEEVENT);
+	tme.dwFlags = TME_LEAVE;   // 떠날 때 알려달라
+	tme.hwndTrack = hWnd;
+
+	/// 임시 그리기 영역 
+	/// 나중에 코드 삭제할 예정입니다.
+	DrawRect = { 50, 50, 500, 500 };
 	/* 브러쉬 기능 비활성화
 	currentWidth = 2.0f;
 	lastTime = 0;
@@ -21,17 +30,25 @@ DrawingManager::~DrawingManager() // 소멸자 구현 추가
 
 void DrawingManager::testDrawing(HDC hdc, int x, int y)
 {
+	TrackMouseEvent(&tme);
 	HPEN oldPen = (HPEN)SelectObject(hdc, penView->getCurrentPen());
-	if (isDrawing)
+	if (isDrawing && PtInRect(&DrawRect, POINT{ x, y }))
 	{
+		SetCapture(hWnd);
+		/// 마우스가 떠나게 되면 이벤트 메세지 발생
 		MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
 		LineTo(hdc, x, y);
 	}
-		lastPoint.x = x;
-		lastPoint.y = y;
-	DrawPoints::saveToPoint(x, y);
-		// SelectObject(hdc, oldPen);
+	else { ReleaseCapture(); }
+	lastPoint.x = x;
+	lastPoint.y = y;
+	/// 그릴 그릴 때 함수를 통해 벡터로 좌표 전달
+	if (isDrawing) { DrawPoints::saveToPoint(x, y); }
+	SelectObject(hdc, oldPen);
+
 }
+
+
 //}
 //void DrawingManager::startDrawing(HDC hdc, int x, int y) {
 //	isDrawing = true;

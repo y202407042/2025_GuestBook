@@ -8,6 +8,15 @@ class DrawingManager: public DrawPoints
 private:
     POINT lastPoint;
     PenView* penView;
+    HWND hWnd;
+
+    /// 창에서 마우스가 나가지면 비활성화 하기 위한 코드
+    TRACKMOUSEEVENT tme = {};
+
+    /// 임시 그리기 영역 
+    /// 나중에 코드 삭제할 예정입니다.
+    RECT DrawRect;
+
     /* 펜 브러쉬 기능 비활성화
     DWORD lastTime;        // 마지막 그리기 시간
     float currentWidth;    // 현재 펜 굵기
@@ -17,9 +26,10 @@ private:
 
 public:
     BOOL isDrawing;
-    DrawingManager(PenView* pv);
+    DrawingManager(PenView* pv, HWND hWnd);
     ~DrawingManager();
     void testDrawing(HDC hdc, int x, int y);
+    
     /*void startDrawing(HDC hdc, int x, int y);
     void continueDrawing(HDC hdc, int x, int y);
     void endDrawing(HDC hdc, int x, int y);*/

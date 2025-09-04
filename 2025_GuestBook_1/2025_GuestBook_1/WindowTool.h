@@ -3,6 +3,7 @@
 #include <vector>
 #include "ButtonTool.h"
 
+
 /// WindowTool 클래스: 메인 윈도우와 영역 분할 관리
 class WindowTool {
 public:
@@ -24,6 +25,9 @@ private:
     HWND canvasArea{};
 
     std::vector<ButtonTool*> buttons;
+
+    /// 더블 버퍼 전담 객체
+    /*CanvasBuffer canvasBuffer;*/
 
     void createChildWindows(HWND parent);
     void resizeChildWindows(RECT clientRect);

@@ -1,3 +1,4 @@
+//#include <commdlg.h>
 #include "WindowTool.h"
 #include "Resource.h"
 
@@ -191,6 +192,9 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 
 /// 캔버스 전용 프로시저 : 배경을 항상 깨끗하게 칠함
 LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    /*HWND parent = GetParent(hwnd);
+    auto* self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(parent, GWLP_USERDATA));*/
+
     switch (msg) {
     case WM_ERASEBKGND:
         // 배경 지우기 직접 처리 → 1 반환(시스템 추가 지우기 금지)
@@ -199,7 +203,7 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
-        // 캔버스 배경 흰색으로 깨끗하게 칠하기 (선 잔상 제거)
+
         FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
         EndPaint(hwnd, &ps);
         return 0;
@@ -207,3 +211,4 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
+

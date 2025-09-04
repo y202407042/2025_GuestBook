@@ -19,6 +19,16 @@
 #define IDC_BTN_COLOR      203
 #define IDC_BTN_BRUSH      204
 
+#define IDI_PEN_BUTTON   221
+#define IDI_BRUSH_BUTTON 222
+#define IDI_SPRAY_BUTTON 223
+#define IDI_ERASER_BUTTON 224
+
+#define PEN_TYPE_NORMAL 231
+#define PEN_TYPE_BRUSH 232
+#define PEN_TYPE_SPRAY 233
+#define PEN_TYPE_ERASER 234
+
 // Saveload 상수들 300번대
 #define IDC_BTN_SAVE       301
 #define IDC_BTN_LOAD       302

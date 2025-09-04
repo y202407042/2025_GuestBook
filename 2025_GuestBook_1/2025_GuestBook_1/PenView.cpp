@@ -1,5 +1,7 @@
 #include "PenView.h"
 #include "windows.h"
+#include "Resource.h"
+
 PenView::PenView()
 {
     normalPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));

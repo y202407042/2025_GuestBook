@@ -2,17 +2,21 @@
 #include "windows.h"
 PenView::PenView()
 {
-    normalPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    /// 펜 초기화
+    penStrock = 1;
+    penColor = RGB(0, 0, 0);
+    drawTime = 0;
+
+    /// 상수를 변수로 수정
+    normalPen = CreatePen(PS_SOLID, penStrock, penColor);
     brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
-    /// 스프레이 기능은 별도의 창을 만들어서 넣어야 한다고 함.
-    /// sprayPen = ;
+   
     currentPenType = PEN_TYPE_NORMAL;;
 }
 PenView::~PenView() // 소멸자 구현 추가
 {
     DeleteObject(normalPen);
     DeleteObject(brushPen);
-    DeleteObject(sprayPen);
 }
 void PenView::getChangePen(WPARAM wParam)  // message 매개변수 제거
 {
@@ -44,9 +48,6 @@ void PenView::switchPen(int type)
         break;
     case PEN_TYPE_BRUSH:
         selectPen = brushPen;
-        break;
-    case PEN_TYPE_SPRAY:
-        selectPen = sprayPen;
         break;
     default:
         selectPen = normalPen;

@@ -4,13 +4,9 @@
 /// COLORREF 적용 전
 /// storck 제거
 
-DrawPoints::DrawPoints()
+void DrawPoints::saveToPoint(int x, int y, int strock, int time)
 {
-	/// 그냥 만들어봣어요
-}
-void DrawPoints::saveToPoint(int x, int y)
-{
-	PenInit.push_back({ x, y});
+	PenInit.push_back({ x, y,strock,time});
 }
 
 void DrawPoints::drawToPoint(HDC hdc)

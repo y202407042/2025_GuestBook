@@ -20,9 +20,12 @@ class PenView
 private:
 	HPEN normalPen;
 	HPEN brushPen;
-	HPEN sprayPen;
 	HPEN selectPen;
 	int currentPenType;
+	
+	int penStrock;
+	int drawTime;
+	COLORREF penColor;
 
 public:
 	PenView();

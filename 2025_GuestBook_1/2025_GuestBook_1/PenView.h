@@ -34,5 +34,9 @@ public:
 	void switchPen(int type);
 	HPEN getCurrentPen();
 	int getCurrentPenType();
+
+	int getPenStrock() const;
+	COLORREF getPenColor() const;
+
 };
 

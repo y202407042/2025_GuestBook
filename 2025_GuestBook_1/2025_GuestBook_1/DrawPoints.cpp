@@ -13,10 +13,9 @@ DrawPoints::DrawPoints()
 /// COLORREF 적용 전
 /// storck 제거
 
-void DrawPoints::saveToPoint(int x, int y, int strock, double startTime, double endTime)
+void DrawPoints::saveToPoint(int x, int y,uint32_t drawTime)
 {
-    double elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-	PenInit.push_back({ x, y,strock});
+	PenInit.push_back({ x, y,drawTime});
 }
 
 
@@ -31,21 +30,4 @@ void DrawPoints::drawToPoint(HDC hdc)
     for (size_t i = 1; i < PenInit.size(); ++i) {
         LineTo(hdc, PenInit[i].x, PenInit[i].y);
     }
-}
-
-/// chrono 추가 공부 필요
-double DrawPoints::getStartTime()
-{
-    auto time = std::chrono::steady_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(
-        time.time_since_epoch()
-    ).count();
-}
-
-double DrawPoints::getEndTime()
-{
-    auto time = std::chrono::steady_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(
-        time.time_since_epoch()
-    ).count();
 }

@@ -1,6 +1,6 @@
 
 #include "PenView.h"
-#include "DrawingManger.h"
+#include "DrawingManager.h"
 #include "DrawPoints.h"
 #include <cmath>
 
@@ -8,6 +8,9 @@ DrawingManager::DrawingManager(PenView* pv, HWND hWnd) // 생성자 구현 추가
 	: penView(pv)
 {
 	/// time 관련 변수들 초기화
+	drawStart = {};
+	drawEnd = {};
+	drawTime = {};
 
 	lastPoint.x = 0;
 	lastPoint.y = 0;
@@ -30,29 +33,33 @@ DrawingManager::~DrawingManager() // 소멸자 구현 추가
 
 void DrawingManager::drawingEvent(HDC hdc, HWND hWnd, LPARAM lParam)
 {
+	if (!isDrawing) return;
+
+	int x = LOWORD(lParam);
+	int y = HIWORD(lParam);
+
 	HPEN oldPen = (HPEN)SelectObject(hdc, penView->getCurrentPen());
-	if (isDrawing) {
 
-		int x = LOWORD(lParam);
-		int y = HIWORD(lParam);
+	MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
+	LineTo(hdc, x, y);
+	lastPoint.x = x;
+	lastPoint.y = y;
+	/// 그릴 그릴 때 함수를 통해 벡터로 좌표 전달
+	/// 필요한 데이터들 벡터에 저장.
 
-		MoveToEx(hdc, lastPoint.x, lastPoint.y, NULL);
-		LineTo(hdc, x, y);
-		lastPoint.x = x;
-		lastPoint.y = y;
-		/// 그릴 그릴 때 함수를 통해 벡터로 좌표 전달
-		/// 필요한 데이터들 벡터에 저장.
-		
-		DrawPoints::saveToPoint(x, y, penWidth);
-	}
+	uint32_t drawTime = (uint32_t)std::chrono::duration_cast<std::chrono::milliseconds>(
+		Clock::now() - drawStart).count();
+
+	DrawPoints::saveToPoint(x, y, drawTime);
 	SelectObject(hdc, oldPen);
 
 }
 /// L마우스 다운 업 이벤트 생성. 추후 메세지에 함수 불러와서 사용할 수 있게.
-void DrawingManager::lMouseDownEvent()
+void DrawingManager::lMouseDownEvent(int x, int y)
 {
 	isDrawing = TRUE;
 	drawStart = Clock::now();
+	lastPoint = { x,y };
 	/// 마우스가 떠나게 되면 이벤트 메세지 발생
 	TrackMouseEvent(&tme);
 	SetCapture(hWnd);

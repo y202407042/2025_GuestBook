@@ -24,19 +24,19 @@ private:
 	int currentPenType;
 	
 	int penStrock;
-	int drawTime;
 	COLORREF penColor;
 
 public:
 	PenView();
 	~PenView();
-	void getChangePen(WPARAM wParam);
-	void switchPen(int type);
 	HPEN getCurrentPen();
 	int getCurrentPenType();
 
 	int getPenStrock() const;
 	COLORREF getPenColor() const;
+
+	/// 펜 다이어로그 생성
+	INT_PTR CALLBACK PenDlgProc(HWND hDig, UINT message);
 
 };
 

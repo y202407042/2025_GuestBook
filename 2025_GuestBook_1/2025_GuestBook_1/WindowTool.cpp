@@ -1,4 +1,5 @@
 //#include <commdlg.h>
+#include <windowsx.h>
 #include "WindowTool.h"
 #include "Resource.h"
 
@@ -33,7 +34,8 @@ bool WindowTool::createMainWindow(int width, int height) {
         0, wc.lpszClassName, L"GuestBook Drawing Tool",
         style,
         CW_USEDEFAULT, CW_USEDEFAULT, width, height,
-        nullptr, nullptr, hInstance, this
+        nullptr, nullptr, hInstance,
+        this
     );
     return mainWindow != nullptr;
 }
@@ -126,6 +128,11 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     else {
         self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
     }
+    self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    if (!self) {
+        // 생성 초기에 들어오는 몇몇 메시지 방어
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
 
     switch (msg) {
     case WM_CREATE:
@@ -133,8 +140,14 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         return 0;
 
     case WM_SIZE: {
-        RECT r; GetClientRect(hwnd, &r);
-        self->resizeChildWindows(r);
+        if (self && self->canvasArea) {
+            RECT rc; GetClientRect(hwnd, &rc);
+            int toolbarH = 60; // 툴바 높이에 맞게
+            MoveWindow(self->canvasArea,
+                0, toolbarH,
+                rc.right, rc.bottom - toolbarH,
+                TRUE);
+        }
         return 0;
     }
 
@@ -156,25 +169,30 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         const int id = LOWORD(wParam);
         switch (id) {
         case IDC_BTN_PEN:
-            MessageBox(hwnd, L"펜", L"INFO", MB_OK);
+            self->penView.switchPen(PEN_TYPE_NORMAL);
             return 0;
         case IDC_BTN_SPRAY:
-            MessageBox(hwnd, L"스프레이", L"INFO", MB_OK);
+            self->penView.switchPen(PEN_TYPE_SPRAY);
             return 0;
         case IDC_BTN_COLOR:
-            MessageBox(hwnd, L"색상", L"INFO", MB_OK);
+        {
+            COLORREF c = self->colorPicker.Show(hwnd);
+            self->colorMgr.SetColor(c);
+            InvalidateRect(self->canvasArea, nullptr, FALSE);
             return 0;
+        }
         case IDC_BTN_BRUSH:
-            MessageBox(hwnd, L"브러시", L"INFO", MB_OK);
+            self->penView.switchPen(PEN_TYPE_BRUSH);
             return 0;
         case IDC_BTN_SAVE:
-            MessageBox(hwnd, L"저장", L"INFO", MB_OK);
+            self->fileSave.Run(self->canvasArea);
             return 0;
         case IDC_BTN_LOAD:
-            MessageBox(hwnd, L"불러오기", L"INFO", MB_OK);
+            self->fileLoad.Run(self->canvasArea);
+            InvalidateRect(self->canvasArea, nullptr, TRUE);
             return 0;
         case IDC_BTN_REPLAY:
-            MessageBox(hwnd, L"리플레이", L"INFO", MB_OK);
+            self->penReplay.replayStart(self->drawPoints.getPoints());
             return 0;
         default:
             break;
@@ -183,6 +201,9 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     }
 
     case WM_DESTROY:
+        if (self) {
+            self->canvas.destroy();
+        }
         PostQuitMessage(0);
         return 0;
     }
@@ -191,23 +212,86 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
 }
 
 /// 캔버스 전용 프로시저 : 배경을 항상 깨끗하게 칠함
-LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    /*HWND parent = GetParent(hwnd);
-    auto* self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(parent, GWLP_USERDATA));*/
+LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    HWND parent = GetParent(hwnd);
+    auto* self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(parent, GWLP_USERDATA));
+    if (!self) return DefWindowProc(hwnd, msg, wParam, lParam);
 
-    switch (msg) {
+    switch (msg)
+    {
     case WM_ERASEBKGND:
-        // 배경 지우기 직접 처리 → 1 반환(시스템 추가 지우기 금지)
+        // 깜빡임 방지: 우리가 직접 그릴 거라서 배경 지우지 않음
         return 1;
+
+    case WM_CREATE:
+        // 최초 생성 시 버퍼 준비
+        self->canvas.resizeTo(hwnd);
+        return 0;
+
+    case WM_SIZE:
+        // 사이즈 변경 시 버퍼 재생성
+        self->canvas.resizeTo(hwnd);
+        InvalidateRect(hwnd, nullptr, FALSE);
+        return 0;
+
+    case WM_LBUTTONDOWN: {
+        self->isDrawing = true;
+        self->lastPt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+        self->drawPoints.saveToPoint(self->lastPt.x, self->lastPt.y);
+        SetCapture(hwnd);
+        return 0;
+    }
+
+    case WM_MOUSEMOVE: {
+        if (!self->isDrawing) return 0;
+
+        int x = GET_X_LPARAM(lParam);
+        int y = GET_Y_LPARAM(lParam);
+
+        // ★ 화면 DC가 아니라, 버퍼 DC에 그린다
+        HPEN drawPen = CreatePen(
+            PS_SOLID,
+            (self->penView.getCurrentPenType() == PEN_TYPE_BRUSH ? 3 : 1),
+            self->colorMgr.GetColor()
+        );
+        HGDIOBJ old = SelectObject(self->canvas.memDC, drawPen);
+        MoveToEx(self->canvas.memDC, self->lastPt.x, self->lastPt.y, nullptr);
+        LineTo(self->canvas.memDC, x, y);
+        SelectObject(self->canvas.memDC, old);
+        DeleteObject(drawPen);
+
+        self->drawPoints.saveToPoint(x, y);
+        self->lastPt = { x,y };
+
+        // 변경된 영역만 갱신하고 싶으면 InvalidateRect에 소사각 지정해도 됨
+        InvalidateRect(hwnd, nullptr, FALSE);
+        return 0;
+    }
+
+    case WM_LBUTTONUP:
+        self->isDrawing = false;
+        ReleaseCapture();
+        return 0;
 
     case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+        // 필요 시 전체를 다시 그려야 할 때(리플레이 없이):
+        // self->canvas.clear(); self->drawPoints.drawToPoint(self->canvas.memDC);
+
+        //오프스크린 버퍼 화면으로 복사
+        BitBlt(hdc, 0, 0, self->canvas.w, self->canvas.h,
+            self->canvas.memDC, 0, 0, SRCCOPY);
+
         EndPaint(hwnd, &ps);
         return 0;
     }
+
+    case WM_DESTROY:
+        self->canvas.destroy();
+        return 0;
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }

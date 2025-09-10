@@ -21,7 +21,8 @@ public:
 	void replayStart(const std::vector<PenData>& sourceBuffer);
 	void replayThread();
 	void replayPause();
-	void replayThread();
+	// 오류 보려고 일단 주석 달아놧습니다...
+	/*void replayThread();*/
 };
 
 

@@ -249,7 +249,7 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         int x = GET_X_LPARAM(lParam);
         int y = GET_Y_LPARAM(lParam);
 
-        // ★ 화면 DC가 아니라, 버퍼 DC에 그린다
+        /// 버퍼 DC에 그리기
         HPEN drawPen = CreatePen(
             PS_SOLID,
             (self->penView.getCurrentPenType() == PEN_TYPE_BRUSH ? 3 : 1),
@@ -264,7 +264,7 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         self->drawPoints.saveToPoint(x, y);
         self->lastPt = { x,y };
 
-        // 변경된 영역만 갱신하고 싶으면 InvalidateRect에 소사각 지정해도 됨
+        /// 변경된 영역만 갱신하고 싶으면 InvalidateRect에 소사각 지정
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }

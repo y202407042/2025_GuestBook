@@ -1,50 +1,37 @@
 #include "FileLoad.h"
+#include <commdlg.h>
+#include <fstream>
 
-// 불러오기 버튼 눌렀을 때 실행
-bool FileLoad::Run(HWND hWnd) {
-    wchar_t filePath[MAX_PATH] = L"";
+FileLoad::FileLoad(HWND hWnd) : hWnd(hWnd) {}
+FileLoad::~FileLoad() {}
 
-    // 파일 경로 선택
-    if (!GetOpenPath(hWnd, filePath, MAX_PATH))
-        return false;
-
-    // 화면에 그림
-    return LoadBitmapToWindow(hWnd, filePath);
-}
-
-// 파일 열기 대화상자 열기
-bool FileLoad::GetOpenPath(HWND hWnd, wchar_t* path, DWORD size) {
-    OPENFILENAMEW ofn = { 0 };
+bool FileLoad::loadFromFile(std::vector<PenData>& penData) {
+    // 파일 다이얼로그 설정
+    WCHAR fileName[MAX_PATH] = L"";
+    OPENFILENAMEW ofn{};
     ofn.lStructSize = sizeof(ofn);
     ofn.hwndOwner = hWnd;
-    ofn.lpstrFile = path;
-    ofn.nMaxFile = size;
-    ofn.lpstrFilter = L"BMP 파일\0*.bmp\0모든 파일\0*.*\0";
-    ofn.nFilterIndex = 1;
-    ofn.Flags = OFN_FILEMUSTEXIST;
+    ofn.lpstrFilter = L"Guest Book(*.gp)\0*.gp\0All Files\0*.*\0";
+    ofn.lpstrDefExt = L"gp";
+    ofn.lpstrFile = fileName;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.Flags = OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-    path[0] = '\0';
+    if (GetOpenFileNameW(&ofn)) {
+        std::ifstream inFile(fileName, std::ios::binary);
+        if (!inFile.is_open()) return false;
 
-    return GetOpenFileNameW(&ofn);
-}
+        // 데이터 개수 읽기
+        size_t size = 0;
+        inFile.read(reinterpret_cast<char*>(&size), sizeof(size));
+        if (size == 0) return false;
 
-// 선택한 비트맵을 윈도우에 그리기
-bool FileLoad::LoadBitmapToWindow(HWND hWnd, const wchar_t* path) {
-    HBITMAP hBitmap = (HBITMAP)LoadImageW(NULL, path, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    if (!hBitmap) return false;
+        // 벡터 크기 조정 후 읽기
+        penData.resize(size);
+        inFile.read(reinterpret_cast<char*>(penData.data()), size * sizeof(PenData));
 
-    HDC hdc = GetDC(hWnd);
-    HDC memDC = CreateCompatibleDC(hdc);
-    HBITMAP oldBitmap = (HBITMAP)SelectObject(memDC, hBitmap);
-
-    BITMAP bmp;
-    GetObject(hBitmap, sizeof(BITMAP), &bmp);
-    BitBlt(hdc, 0, 0, bmp.bmWidth, bmp.bmHeight, memDC, 0, 0, SRCCOPY);
-
-    SelectObject(memDC, oldBitmap);
-    DeleteDC(memDC);
-    ReleaseDC(hWnd, hdc);
-    DeleteObject(hBitmap);
-
-    return true;
+        inFile.close();
+        return true;
+    }
+    return false;
 }

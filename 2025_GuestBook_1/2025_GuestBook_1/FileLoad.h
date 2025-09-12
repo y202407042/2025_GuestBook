@@ -1,13 +1,18 @@
 #pragma once
 #include <windows.h>
-#include <commdlg.h>
+#include <vector>
+#include <string>
+#include "DrawPoints.h" 
 
 class FileLoad {
 public:
-    // 불러오기 실행 함수
-    bool Run(HWND hWnd);
+    FileLoad(HWND hWnd);
+    ~FileLoad();
+
+    /// 파일에서 PenData를 읽어 벡터로 반환
+    /// 로드 성공 시 true 반환
+    bool loadFromFile(std::vector<PenData>& penData);
 
 private:
-    bool GetOpenPath(HWND hWnd, wchar_t* path, DWORD size); // 파일 경로 선택
-    bool LoadBitmapToWindow(HWND hWnd, const wchar_t* path); // 파일 로드 후 화면에 그림
+    HWND hWnd;
 };

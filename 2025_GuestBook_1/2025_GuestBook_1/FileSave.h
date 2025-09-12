@@ -1,13 +1,18 @@
 #pragma once
 #include <windows.h>
-#include <commdlg.h>
+#include <vector>
+#include <string>
+#include "DrawPoints.h"   
 
 class FileSave {
 public:
-    // 저장 실행 함수
-    bool Run(HWND hWnd);
+    FileSave(HWND hWnd);
+    ~FileSave();
+
+    /// 벡터에 담긴 PenData를 파일로 저장
+    /// 저장이 성공하면 true 반환
+    bool saveToFile(const std::vector<PenData>& penData);
 
 private:
-    bool GetSavePath(HWND hWnd, wchar_t* path, DWORD size); // 저장 경로 선택
-    bool SaveBitmap(HWND hWnd, const wchar_t* path);        // 비트맵 저장
+    HWND hWnd;  // 다이얼로그 부모 윈도우 핸들
 };

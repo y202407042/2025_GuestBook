@@ -15,13 +15,14 @@ private:
 	std::thread rpThread;
 	std::mutex mtx;
 	std::atomic<bool> isReplaying{ false };
+	/// 좌표를 던져줄 윈도우
+	HWND targetHwnd = nullptr;
 
 public:
-	void addCoord(/*미정*/);
 	void replayStart(const std::vector<PenData>& sourceBuffer);
 	void replayThread();
 	void replayPause();
-	void replayThread();
+	void setTargetHwnd(HWND h) { targetHwnd = h; }
 };
 
 

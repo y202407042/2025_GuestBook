@@ -1,28 +1,28 @@
 #include "PenReplay.h"
 
-
-void PenReplay::replayThread()
-{
+void PenReplay::replayThread() {
     std::vector<PenData> localBuffer;
-
     {
-        /// 락 걸고 복사
         std::lock_guard<std::mutex> lock(mtx);
         localBuffer = replayBuffer;
     }
 
-    for (const auto& p : localBuffer)
-    {
-        if (!isReplaying.load())
-        {
-            break;
-        }
-
-        /// 여기서 처리 해야됨
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(TIME_INTERVAL));
-
+    /// 그릴 핸들
+    HDC hdc = GetDC(targetHwnd);
+    if (!localBuffer.empty()) {
+        MoveToEx(hdc, localBuffer[0].x, localBuffer[0].y, nullptr);
     }
+
+    for (const auto& p : localBuffer) {
+        if (!isReplaying.load()) break;
+
+        LineTo(hdc, p.x, p.y);
+
+        /// 속도 조절
+        std::this_thread::sleep_for(std::chrono::milliseconds(TIME_INTERVAL));
+    }
+
+    ReleaseDC(targetHwnd, hdc);
     isReplaying.store(false);
 }
 

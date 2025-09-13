@@ -14,9 +14,10 @@ struct PenData {
 class DrawPoints
 {
 private:
-	std::vector<PenData> PenInit;
 
 public:
+	/// 백터 PenInit public으로 이동 
+	std::vector<PenData> PenInit;
 
 	DrawPoints();
 	/// COLORREF 적용 전

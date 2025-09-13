@@ -3,15 +3,10 @@
 #include <chrono>
 #include <vector>
 
-
-/// 생성자 생성 및 구조체 정의
-DrawPoints::DrawPoints()
-{
- 
-}
-
 /// COLORREF 적용 전
 /// storck 제거
+
+DrawPoints::DrawPoints() = default;
 
 void DrawPoints::saveToPoint(int x, int y,uint32_t drawTime)
 {

@@ -1,24 +1,34 @@
 #include "PenReplay.h"
 
-void PenReplay::replayThread() {
+void PenReplay::replayThread()
+{
+    /// 리플레이 스레드에서 사용될 버퍼
     std::vector<PenData> localBuffer;
+
     {
         std::lock_guard<std::mutex> lock(mtx);
         localBuffer = replayBuffer;
     }
 
-    /// 그릴 핸들
-    HDC hdc = GetDC(targetHwnd);
-    if (!localBuffer.empty()) {
-        MoveToEx(hdc, localBuffer[0].x, localBuffer[0].y, nullptr);
+    if (localBuffer.empty() || targetHwnd == nullptr)
+    {
+        isReplaying.store(false);
+        return;
     }
 
-    for (const auto& p : localBuffer) {
-        if (!isReplaying.load()) break;
+    /// 그릴 핸들
+    HDC hdc = GetDC(targetHwnd);
+    MoveToEx(hdc, localBuffer[0].x, localBuffer[0].y, nullptr);
 
-        LineTo(hdc, p.x, p.y);
+    for (size_t i = 1; i < localBuffer.size(); ++i)
+    {
+        if (!isReplaying.load())
+        {
+            break;
+        }
 
-        /// 속도 조절
+        LineTo(hdc, localBuffer[i].x, localBuffer[i].y);
+
         std::this_thread::sleep_for(std::chrono::milliseconds(TIME_INTERVAL));
     }
 
@@ -26,7 +36,7 @@ void PenReplay::replayThread() {
     isReplaying.store(false);
 }
 
-void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer)
+void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer, HWND hwnd)
 {
     if (sourceBuffer.empty() || isReplaying.load())
     {
@@ -35,13 +45,15 @@ void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer)
 
     {
         std::lock_guard<std::mutex> lock(mtx);
-        /// 원본 데이터 복사
+        /// 원본의 데이터를 리플레이용 버퍼에 저장
+        /// sourceBuffer는 PenInit의 값
         replayBuffer = sourceBuffer;
     }
 
+    /// 핸들을 저장
+    targetHwnd = hwnd;
     isReplaying.store(true);
 
-    /// 스레드 실행
     rpThread = std::thread(&PenReplay::replayThread, this);
     rpThread.detach();
 }
@@ -49,4 +61,9 @@ void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer)
 void PenReplay::replayPause()
 {
 	/// 일시정지
+}
+
+void PenReplay::replayResume()
+{
+    /// 재개
 }

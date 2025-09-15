@@ -19,9 +19,10 @@ private:
 	HWND targetHwnd = nullptr;
 
 public:
-	void replayStart(const std::vector<PenData>& sourceBuffer);
+	void replayStart(const std::vector<PenData>& sourceBuffer, HWND hwnd);
 	void replayThread();
 	void replayPause();
+	void replayResume();
 	void setTargetHwnd(HWND h) { targetHwnd = h; }
 };
 

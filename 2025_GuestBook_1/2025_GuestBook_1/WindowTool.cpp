@@ -1,5 +1,3 @@
-//#include <commdlg.h>
-#include <windowsx.h>
 #include "WindowTool.h"
 #include "Resource.h"
 
@@ -27,7 +25,7 @@ bool WindowTool::createMainWindow(int width, int height) {
     wcc.hbrBackground = nullptr; // WM_PAINT에서 직접 칠함 (더블버퍼 비슷한 효과)
     RegisterClass(&wcc);
 
-   /// 부모에 WS_CLIPCHILDREN 추가(자식 위 덮어칠 위험 제거)
+    /// 부모에 WS_CLIPCHILDREN 추가(자식 위 덮어칠 위험 제거)
     DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
 
     mainWindow = CreateWindowEx(
@@ -164,7 +162,7 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         break;
     }
 
-    // 버튼 클릭 처리
+                          // 버튼 클릭 처리
     case WM_COMMAND: {
         const int id = LOWORD(wParam);
         switch (id) {
@@ -295,4 +293,3 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
-

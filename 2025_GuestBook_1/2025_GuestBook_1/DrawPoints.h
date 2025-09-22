@@ -26,5 +26,9 @@ public:
 	void saveToPoint(int x, int y,uint32_t drawTime);
 	void drawToPoint(HDC hdc);
 
+	/// 리플레이에서 값을 저장하기 위해 getter 변수 생성
+	const std::vector<PenData>& getPenInit();
+
+
 };
 

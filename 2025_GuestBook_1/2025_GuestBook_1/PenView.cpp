@@ -1,11 +1,9 @@
 #include "PenView.h"
 #include "windows.h"
-#include "PenStrokeDlglog.h"
 
 #define IDD_PLUS_SIZE 30000
 #define IDD_MIUS_SIZE 30001
 
-PenView* gPenView = nullptr; 
 
 PenView::PenView()
 {
@@ -25,6 +23,7 @@ PenView::~PenView() // 소멸자 구현 추가
 	DeleteObject(normalPen);
 	DeleteObject(brushPen);
 }
+
 HPEN PenView::getCurrentPen()
 {
 	return selectPen;
@@ -61,6 +60,14 @@ void PenView::setPenStroke(int s)
 	}
 }
 
+/// ColorPicker에서 컬러값 가지고 오기
+void PenView::setPenColor(COLORREF penColorData)
+{
+	penColor = penColorData;
+	if (normalPen) DeleteObject(normalPen);
+	normalPen = CreatePen(PS_SOLID, penStrock, penColor);
+	if (currentPenType == PEN_TYPE_NORMAL) selectPen = normalPen;
+}
 
 /// WindowTool.h
 /// Add: #include "PenStrokDlg.h",  #include "PenStroke.h" 추가

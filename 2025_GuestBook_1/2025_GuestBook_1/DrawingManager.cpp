@@ -7,6 +7,9 @@
 DrawingManager::DrawingManager(PenView* pv, HWND hWnd) // 생성자 구현 추가
 	: penView(pv)
 {
+	/// hWnd 초기화 
+	this->hWnd = hWnd;
+
 	/// time 관련 변수들 초기화
 	drawStart = {};
 	drawEnd = {};

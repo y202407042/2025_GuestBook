@@ -13,7 +13,12 @@ void DrawPoints::saveToPoint(int x, int y,uint32_t drawTime)
 	PenInit.push_back({ x, y,drawTime});
 }
 
+/// 리플레이를 위한 getter 메서드 생성
+const std::vector<PenData>& DrawPoints::getPenInit()
+{
+    return PenInit;
 
+}
 void DrawPoints::drawToPoint(HDC hdc)
 {
     if (PenInit.size() < 2) return; // 점 2개 이상 있어야 선 그려짐

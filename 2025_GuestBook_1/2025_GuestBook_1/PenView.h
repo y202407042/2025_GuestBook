@@ -1,8 +1,8 @@
 #pragma once
 #include <windows.h>
 
-/// 바인딩 구현
-#include "PenStrokeDlglog.h"
+/// 컬러 헤더파일 가지고 오기
+#include "ColorManager.h"
 
 ///버튼 상수처리문.
 /// resource.h으로 이동 예정.
@@ -17,8 +17,6 @@
 #define PEN_TYPE_BRUSH 402
 #define PEN_TYPE_SPRAY 403
 #define PEN_TYPE_ERASER 404
-
-class PenStrokeDlg; // 다이얼로그 클래스 전방선언
 
 class PenView
 {
@@ -39,6 +37,7 @@ public:
 
 	int getPenStrock() const;
 	COLORREF getPenColor() const;
+	void setPenColor(COLORREF penColorData);
 
 	/// 굵기 관련 데이터 추가
 	 void setPenStroke(int s);

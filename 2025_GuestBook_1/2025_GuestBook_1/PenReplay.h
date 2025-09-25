@@ -14,7 +14,10 @@ private:
 	std::vector<PenData> replayBuffer;
 	std::thread rpThread;
 	std::mutex mtx;
-	std::atomic<bool> isReplaying{ false };
+	/// 리플레이 상태 확인
+	std::atomic<bool> isReplaying { false };
+	/// 일시정지 상태 확인
+	std::atomic<bool> isPaused { false };
 	/// 좌표를 던져줄 윈도우
 	HWND targetHwnd = nullptr;
 

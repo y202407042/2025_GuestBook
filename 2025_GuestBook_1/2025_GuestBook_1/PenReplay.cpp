@@ -18,6 +18,7 @@ void PenReplay::replayThread()
 
     /// 그릴 핸들
     HDC hdc = GetDC(targetHwnd);
+
     MoveToEx(hdc, localBuffer[0].x, localBuffer[0].y, nullptr);
 
     for (size_t i = 1; i < localBuffer.size(); ++i)
@@ -27,8 +28,19 @@ void PenReplay::replayThread()
             break;
         }
 
-        LineTo(hdc, localBuffer[i].x, localBuffer[i].y);
+        /// 일시정지 상태인 경우 대기하는 루프문
+        while (isPaused.load())
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
+            /// 일시정지 상태가 해제 되면 빠져나옴
+            if (!isReplaying.load())
+            {
+                break;
+            }
+        }
+
+        LineTo(hdc, localBuffer[i].x, localBuffer[i].y);
         std::this_thread::sleep_for(std::chrono::milliseconds(TIME_INTERVAL));
     }
 
@@ -61,9 +73,11 @@ void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer, HWND hwnd)
 void PenReplay::replayPause()
 {
 	/// 일시정지
+    isPaused.store(true);
 }
 
 void PenReplay::replayResume()
 {
     /// 재개
+    isPaused.store(false);
 }

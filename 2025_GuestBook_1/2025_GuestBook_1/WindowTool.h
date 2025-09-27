@@ -27,8 +27,6 @@ public:
     static LRESULT CALLBACK canvasProc(HWND, UINT, WPARAM, LPARAM);
 
 private:
-
->>>>>>> Stashed changes
     HINSTANCE hInstance;
     HWND mainWindow;
 
@@ -41,12 +39,12 @@ private:
     bool isDrawing;
     POINT lastPt;
 
-    PenView penView;
+   /* PenView penView;
     ColorManager colorMgr;
     ColorPicker colorPicker;
     FileSave fileSave;
     FileLoad fileLoad;
     PenReplay penReplay;
-    DrawPoints drawPoints;
+    DrawPoints drawPoints;*/
     CanvasBuffer canvas;
 };

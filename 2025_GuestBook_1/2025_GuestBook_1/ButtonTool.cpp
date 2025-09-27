@@ -18,4 +18,4 @@ void ButtonTool::move(int x, int y, int width, int height) {
     if (hWnd) {
         MoveWindow(hWnd, x, y, width, height, TRUE);
     }
-}
+};

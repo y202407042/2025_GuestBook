@@ -94,3 +94,4 @@ bool FileSave::SaveBitmap(HWND hWnd, const wchar_t* path) {
 
     return true;
 }
+

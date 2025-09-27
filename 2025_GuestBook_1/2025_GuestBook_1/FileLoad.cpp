@@ -48,3 +48,4 @@ bool FileLoad::LoadBitmapToWindow(HWND hWnd, const wchar_t* path) {
 
     return true;
 }
+

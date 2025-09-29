@@ -157,8 +157,6 @@
     <ClCompile Include="PenReplay.cpp" />
     <ClCompile Include="PenView.cpp" />
     <ClCompile Include="WindowTool.cpp" />
-    <ClCompile Include="FileLoad.cpp" />
-    <ClCompile Include="FileSave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2025_GuestBook_1.rc" />

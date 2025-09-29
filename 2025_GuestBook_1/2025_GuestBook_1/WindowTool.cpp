@@ -293,3 +293,4 @@ LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
+

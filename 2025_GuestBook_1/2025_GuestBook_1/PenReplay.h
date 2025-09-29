@@ -14,15 +14,19 @@ private:
 	std::vector<PenData> replayBuffer;
 	std::thread rpThread;
 	std::mutex mtx;
-	std::atomic<bool> isReplaying{ false };
+	/// 리플레이 상태 확인
+	std::atomic<bool> isReplaying { false };
+	/// 일시정지 상태 확인
+	std::atomic<bool> isPaused { false };
+	/// 좌표를 던져줄 윈도우
+	HWND targetHwnd = nullptr;
 
 public:
-	void addCoord(/*미정*/);
-	void replayStart(const std::vector<PenData>& sourceBuffer);
+	void replayStart(const std::vector<PenData>& sourceBuffer, HWND hwnd);
 	void replayThread();
 	void replayPause();
-	// 오류 보려고 일단 주석 달아놧습니다...
-	/*void replayThread();*/
+	void replayResume();
+	void setTargetHwnd(HWND h) { targetHwnd = h; }
 };
 
 

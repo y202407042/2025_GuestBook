@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="2025_GuestBook_1.h" />
     <ClInclude Include="ButtonTool.h" />
+    <ClInclude Include="CanvasBuffer.h" />
     <ClInclude Include="ColorManager.h" />
     <ClInclude Include="ColorPicker.h" />
     <ClInclude Include="DrawingManger.h" />
@@ -146,10 +147,13 @@
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp" />
     <ClCompile Include="ButtonTool.cpp" />
+    <ClCompile Include="CanvasBuffer.cpp" />
     <ClCompile Include="ColorManager.cpp" />
     <ClCompile Include="ColorPicker.cpp" />
     <ClCompile Include="DrawingManger.cpp" />
     <ClCompile Include="DrawPoints.cpp" />
+    <ClCompile Include="FileLoad.cpp" />
+    <ClCompile Include="FileSave.cpp" />
     <ClCompile Include="PenReplay.cpp" />
     <ClCompile Include="PenView.cpp" />
     <ClCompile Include="WindowTool.cpp" />

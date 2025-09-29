@@ -18,4 +18,3 @@ public:
 	void saveToPoint(int x, int y);
 	void drawToPoint(HDC hdc);
 };
-

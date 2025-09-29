@@ -8,6 +8,7 @@ class FileSave {
 public:
     FileSave(HWND hWnd);
     ~FileSave();
+    FileSave();
 
     /// 벡터에 담긴 PenData를 파일로 저장
     /// 저장이 성공하면 true 반환

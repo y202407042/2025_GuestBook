@@ -2,6 +2,7 @@
 #include <commdlg.h>
 #include <fstream>
 
+FileLoad::FileLoad() : hWnd(NULL) {}
 FileLoad::FileLoad(HWND hWnd) : hWnd(hWnd) {}
 FileLoad::~FileLoad() {}
 

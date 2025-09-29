@@ -2,6 +2,8 @@
 #include <commdlg.h>
 #include <fstream>
 
+FileSave::FileSave() : hWnd(nullptr) {}
+
 FileSave::FileSave(HWND hWnd) : hWnd(hWnd) {}
 FileSave::~FileSave() {}
 

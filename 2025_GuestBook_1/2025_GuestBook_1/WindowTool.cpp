@@ -1,6 +1,9 @@
 #include "WindowTool.h"
 #include "Resource.h"
 #include <windowsx.h>
+#include "FileSave.h"
+#include "DrawPoints.h"
+#include "FileLoad.h"
 
 #define TOP_PANEL_HEIGHT 50
 #define TOOLBAR_HEIGHT   60
@@ -161,7 +164,7 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     case WM_COMMAND: {
         int id = LOWORD(wParam);
         switch (id) {
-        /*case IDC_BTN_PEN:    self->penView.switchPen(PEN_TYPE_NORMAL); return 0;
+        case IDC_BTN_PEN:    self->penView.switchPen(PEN_TYPE_NORMAL); return 0;
         case IDC_BTN_SPRAY:  self->penView.switchPen(PEN_TYPE_SPRAY);  return 0;
         case IDC_BTN_BRUSH:  self->penView.switchPen(PEN_TYPE_BRUSH);  return 0;
         case IDC_BTN_COLOR: {
@@ -169,15 +172,48 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
             self->colorMgr.SetColor(c);
             InvalidateRect(self->canvasArea, NULL, FALSE);
             return 0;
-        }*/
-        /*case IDC_BTN_SAVE:   self->fileSave.Run(self->canvasArea); return 0;
-        case IDC_BTN_LOAD:   self->fileLoad.Run(self->canvasArea);
-            InvalidateRect(self->canvasArea, NULL, TRUE);
+        }
+        case IDC_BTN_SAVE:
+        {
+            FileSave saver(hwnd);
+            saver.saveToFile(self->pointsMirror);
             return 0;
+        }
+        case IDC_BTN_LOAD: {
+            FileLoad loader(hwnd);
+            std::vector<PenData> tmp;
+            if (loader.loadFromFile(tmp)) {
+                self->pointsMirror = tmp;
+                PatBlt(self->canvas.memDC, 0, 0, self->canvas.w, self->canvas.h, WHITENESS);
+
+                if (!tmp.empty()) {
+                    // 첫 점 저장
+                    self->drawPoints.saveToPoint(tmp[0].x, tmp[0].y);
+                    for (size_t i = 1; i < tmp.size(); ++i) {
+                        const auto& p0 = tmp[i - 1];
+                        const auto& p1 = tmp[i];
+
+                        HPEN pen = CreatePen(PS_SOLID,
+                            (self->penView.getCurrentPenType() == PEN_TYPE_BRUSH) ? 3 : 1,
+                            self->colorMgr.GetColor());
+                        HGDIOBJ old = SelectObject(self->canvas.memDC, pen);
+                        MoveToEx(self->canvas.memDC, p0.x, p0.y, NULL);
+                        LineTo(self->canvas.memDC, p1.x, p1.y);
+                        SelectObject(self->canvas.memDC, old);
+                        DeleteObject(pen);
+
+                        self->drawPoints.saveToPoint(p1.x, p1.y);
+                    }
+                }
+
+                InvalidateRect(self->canvasArea, NULL, TRUE);
+            }
+            return 0;
+        }
         case IDC_BTN_REPLAY: self->penReplay.replayStart(self->drawPoints.getPoints()); return 0;
         default: break;
         }
-        break;*/
+        break;
     }
 
     case WM_DESTROY:
@@ -189,10 +225,10 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-//LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-//    HWND parent = GetParent(hwnd);
-//    WindowTool* self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(parent, GWLP_USERDATA));
-//    if (self == NULL) return DefWindowProc(hwnd, msg, wParam, lParam);
+LRESULT CALLBACK WindowTool::canvasProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    HWND parent = GetParent(hwnd);
+    WindowTool* self = reinterpret_cast<WindowTool*>(GetWindowLongPtr(parent, GWLP_USERDATA));
+    if (self == NULL) return DefWindowProc(hwnd, msg, wParam, lParam);
 
     switch (msg) {
     case WM_ERASEBKGND:
@@ -211,7 +247,8 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
         self->isDrawing = true;
         self->lastPt.x = GET_X_LPARAM(lParam);
         self->lastPt.y = GET_Y_LPARAM(lParam);
-        /*self->drawPoints.saveToPoint(self->lastPt.x, self->lastPt.y);*/
+        self->drawPoints.saveToPoint(self->lastPt.x, self->lastPt.y);
+        self->pointsMirror.push_back({ self->lastPt.x, self->lastPt.y });
         SetCapture(hwnd);
         return 0;
 
@@ -221,15 +258,17 @@ LRESULT CALLBACK WindowTool::windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPAR
             int x = GET_X_LPARAM(lParam);
             int y = GET_Y_LPARAM(lParam);
 
-            /*int penWidth = (self->penView.getCurrentPenType() == PEN_TYPE_BRUSH) ? 3 : 1;
+            int penWidth = (self->penView.getCurrentPenType() == PEN_TYPE_BRUSH) ? 3 : 1;
             HPEN pen = CreatePen(PS_SOLID, penWidth, self->colorMgr.GetColor());
             HGDIOBJ old = SelectObject(self->canvas.memDC, pen);
             MoveToEx(self->canvas.memDC, self->lastPt.x, self->lastPt.y, NULL);
             LineTo(self->canvas.memDC, x, y);
             SelectObject(self->canvas.memDC, old);
-            DeleteObject(pen);*/
+            DeleteObject(pen);
 
-            /*self->drawPoints.saveToPoint(x, y);*/
+            self->drawPoints.saveToPoint(x, y);
+            self->pointsMirror.push_back({ x, y });
+
             self->lastPt.x = x;
             self->lastPt.y = y;
 

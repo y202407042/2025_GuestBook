@@ -39,12 +39,14 @@ private:
     bool isDrawing;
     POINT lastPt;
 
-   /* PenView penView;
+    PenView penView;
     ColorManager colorMgr;
     ColorPicker colorPicker;
+    PenReplay penReplay;
     FileSave fileSave;
     FileLoad fileLoad;
-    PenReplay penReplay;
-    DrawPoints drawPoints;*/
+    DrawPoints drawPoints;
     CanvasBuffer canvas;
+
+    std::vector<PenData> pointsMirror;
 };

@@ -8,6 +8,7 @@ class FileLoad {
 public:
     FileLoad(HWND hWnd);
     ~FileLoad();
+    FileLoad();
 
     /// 파일에서 PenData를 읽어 벡터로 반환
     /// 로드 성공 시 true 반환

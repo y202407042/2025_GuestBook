@@ -1,11 +1,16 @@
 #include "ColorManager.h"
 
-ColorManager::ColorManager() : currentColor(RGB(0, 0, 0)) {}
-
-void ColorManager::SetColor(COLORREF color) {
-    currentColor = color;
+ColorManager::ColorManager()
+    : current(RGB(0, 0, 0)) // 기본 색상은 검정
+{
 }
 
-COLORREF ColorManager::GetColor() const {
-    return currentColor;
+void ColorManager::SetColor(COLORREF c)
+{
+    current = c;
+}
+
+COLORREF ColorManager::GetColor() const
+{
+    return current;
 }

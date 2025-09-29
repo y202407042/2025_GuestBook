@@ -128,12 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="2025_GuestBook_1.h" />
+    <ClInclude Include="ColorBox.h" />
+    <ClInclude Include="ColorBoxPanel.h" />
+    <ClInclude Include="ColorManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp" />
+    <ClCompile Include="ColorBox.cpp" />
+    <ClCompile Include="ColorBoxPanel.cpp" />
+    <ClCompile Include="ColorDrawDemo.cpp" />
+    <ClCompile Include="ColorManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="2025_GuestBook_1.rc" />

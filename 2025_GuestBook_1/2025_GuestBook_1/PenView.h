@@ -1,46 +1,35 @@
 #pragma once
 #include <windows.h>
 
-/// 컬러 헤더파일 가지고 오기
-#include "ColorManager.h"
-
-///버튼 상수처리문.
-/// resource.h으로 이동 예정.
-#define IDI_PEN_BUTTON 301
-#define IDI_BRUSH_BUTTON 302
-#define IDI_SPRAY_BUTTON 303
-#define IDI_ERASER_BUTTON 304
-
-/// 펜 모양 상수 처리문
-/// resource.h로 이동 예정
-#define PEN_TYPE_NORMAL 401
-#define PEN_TYPE_BRUSH 402
-#define PEN_TYPE_SPRAY 403
-#define PEN_TYPE_ERASER 404
+/////버튼 상수처리문. (옮겻어용~!!)
+///// resource.h으로 이동 예정.
+//#define IDI_PEN_BUTTON 301
+//#define IDI_BRUSH_BUTTON 302
+//#define IDI_SPRAY_BUTTON 303
+//#define IDI_ERASER_BUTTON 304
+//
+///// 펜 모양 상수 처리문
+///// resource.h로 이동 예정
+//#define PEN_TYPE_NORMAL 401
+//#define PEN_TYPE_BRUSH 402
+//#define PEN_TYPE_SPRAY 403
+//#define PEN_TYPE_ERASER 404
 
 class PenView
 {
 private:
 	HPEN normalPen;
 	HPEN brushPen;
+	HPEN sprayPen;
 	HPEN selectPen;
 	int currentPenType;
-	
-	int penStrock;
-	COLORREF penColor;
 
 public:
 	PenView();
 	~PenView();
+	void getChangePen(WPARAM wParam);
+	void switchPen(int type);
 	HPEN getCurrentPen();
 	int getCurrentPenType();
-
-	int getPenStrock() const;
-	COLORREF getPenColor() const;
-	void setPenColor(COLORREF penColorData);
-
-	/// 굵기 관련 데이터 추가
-	 void setPenStroke(int s);
-
 };
 

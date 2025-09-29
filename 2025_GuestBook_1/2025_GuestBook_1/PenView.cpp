@@ -4,96 +4,65 @@
 
 PenView::PenView()
 {
-	/// 펜 초기화
-	penStrock = 1;
-	penColor = RGB(0, 0, 0);
-
-	/// 상수를 변수로 수정
-	normalPen = CreatePen(PS_SOLID, penStrock, penColor);
-	brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
-
-	selectPen = normalPen;
-	currentPenType = PEN_TYPE_NORMAL;
+    normalPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+    brushPen = CreatePen(PS_SOLID, 3, RGB(0, 0, 0));
+    /// 스프레이 기능은 별도의 창을 만들어서 넣어야 한다고 함.
+    /// sprayPen = ;
+    currentPenType = PEN_TYPE_NORMAL;;
 }
 PenView::~PenView() // 소멸자 구현 추가
 {
-	DeleteObject(normalPen);
-	DeleteObject(brushPen);
+    DeleteObject(normalPen);
+    DeleteObject(brushPen);
+    DeleteObject(sprayPen);
 }
-
-HPEN PenView::getCurrentPen()
+void PenView::getChangePen(WPARAM wParam)  // message 매개변수 제거
 {
-	return selectPen;
+    int commandId = LOWORD(wParam);  // 직접 commandId 추출
+
+    switch (commandId) {
+    case IDI_PEN_BUTTON:
+        switchPen(PEN_TYPE_NORMAL);
+        break;
+    case IDI_BRUSH_BUTTON:
+        switchPen(PEN_TYPE_BRUSH);
+        break;
+    case IDI_SPRAY_BUTTON:
+        switchPen(PEN_TYPE_SPRAY);
+        break;
+    case IDI_ERASER_BUTTON:
+        switchPen(PEN_TYPE_ERASER);
+        break;
+    }
 }
 
-int PenView::getCurrentPenType()
+void PenView::switchPen(int type)
 {
-	return currentPenType;
-}
+    currentPenType = type; // 현재 펜 타입 저장
 
-int PenView::getPenStrock() const
+    switch (type) { // 올바른 펜 선택 로직으로 변경
+    case PEN_TYPE_NORMAL:
+        selectPen = normalPen;
+        break;
+    case PEN_TYPE_BRUSH:
+        selectPen = brushPen;
+        break;
+    case PEN_TYPE_SPRAY:
+        selectPen = sprayPen;
+        break;
+    default:
+        selectPen = normalPen;
+        break;
+    }
+}
+HPEN PenView::getCurrentPen() 
 {
-	return penStrock;
+    return selectPen;
 }
-COLORREF PenView::getPenColor() const
+
+int PenView::getCurrentPenType() 
 {
-	return penColor;
+    return currentPenType;
 }
 
-void PenView::setPenStroke(int s)
-{
-	if (s < 1) s = 1;
-	if (s > 30) s = 30;
 
-	penStrock = s;
-
-	// 기존 펜 삭제 후 재생성
-	if (normalPen) DeleteObject(normalPen);
-	normalPen = CreatePen(PS_SOLID, penStrock, penColor);
-
-	// 현재 선택 펜이 일반펜이면 교체
-	if (currentPenType == PEN_TYPE_NORMAL) {
-		selectPen = normalPen;
-	}
-}
-
-/// ColorPicker에서 컬러값 가지고 오기
-void PenView::setPenColor(COLORREF penColorData)
-{
-	penColor = penColorData;
-	if (normalPen) DeleteObject(normalPen);
-	normalPen = CreatePen(PS_SOLID, penStrock, penColor);
-	if (currentPenType == PEN_TYPE_NORMAL) selectPen = normalPen;
-}
-
-/// WindowTool.h
-/// Add: #include "PenStrokDlg.h",  #include "PenStroke.h" 추가
-/// Add: private 영역에 PenStrokeDlg* strokeDlg{nullptr};
-
-/// WindowTool.cpp
-/*
-case WM_CREATE:
-	self->createChildWindows(hwnd);
-	penView->bindStrokeDialog(strokeDlg, // initStroke=10);
-
-	// 펜 굵기 다이얼로그 생성
-	self->strokeDlg = new PenStrokeDlg(self->hInstance, hwnd);
-	if (self->strokeDlg->Create()) {
-		self->strokeDlg->Show(false);
-	}
-	return 0;
-
-	case WM_COMMAND: {
-	const int id = LOWORD(wParam);
-	switch (id) {
-	case IDC_BTN_PEN:
-		if (self->strokeDlg) self->strokeDlg->Show(true);
-		return 0;
-
-		case WM_DESTROY:
-	if (self->strokeDlg) { self->strokeDlg->Destroy(); delete self->strokeDlg; self->strokeDlg = nullptr; }
-	PostQuitMessage(0);
-	return 0;
-
-
-	*/

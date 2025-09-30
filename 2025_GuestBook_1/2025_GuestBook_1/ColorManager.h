@@ -1,12 +1,10 @@
 #pragma once
-#include <windows.h>
+#include <Windows.h>
 
 class ColorManager {
-private:
-    COLORREF currentColor;  
-
+    COLORREF current;
 public:
     ColorManager();
-    void SetColor(COLORREF color);
+    void SetColor(COLORREF c);
     COLORREF GetColor() const;
 };

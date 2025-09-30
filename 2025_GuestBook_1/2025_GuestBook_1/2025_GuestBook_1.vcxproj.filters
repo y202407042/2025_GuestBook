@@ -28,6 +28,15 @@
     <ClInclude Include="2025_GuestBook_1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ColorBox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorBoxPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="WindowTool.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -43,9 +52,7 @@
     <ClInclude Include="ColorManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ColorPicker.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+
     <ClInclude Include="DrawingManger.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -68,6 +75,18 @@
     <ClCompile Include="2025_GuestBook_1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ColorBox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorDrawDemo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorBoxPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="WindowTool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -83,9 +102,7 @@
     <ClCompile Include="ColorManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ColorPicker.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+
     <ClCompile Include="DrawingManger.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

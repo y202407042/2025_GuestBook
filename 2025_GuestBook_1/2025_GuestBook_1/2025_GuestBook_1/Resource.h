@@ -13,9 +13,6 @@
 #define IDI_SMALL				108
 #define IDC_MY2025GUESTBOOK1			109
 
-#define IDD_PLUS_SIZE 30000
-#define IDD_MIUS_SIZE 30001
-
 // 펜 상수들 200번대
 #define IDC_BTN_PEN        201
 #define IDC_BTN_SPRAY      202

@@ -4,6 +4,7 @@
 #include "ButtonTool.h"
 #include "PenView.h"
 #include "ColorManager.h"
+#include "ColorPicker.h"
 #include "FileSave.h"
 #include "FileLoad.h"
 #include "PenReplay.h"
@@ -40,6 +41,7 @@ private:
 
     PenView penView;
     ColorManager colorMgr;
+    ColorPicker colorPicker;
     PenReplay penReplay;
     FileSave fileSave;
     FileLoad fileLoad;

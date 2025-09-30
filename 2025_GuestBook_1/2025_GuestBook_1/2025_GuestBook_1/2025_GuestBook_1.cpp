@@ -94,17 +94,30 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-    hInst = hInstance; // 전역 변수에 인스턴스 핸들을 저장합니다.
+    hInst = hInstance;
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, 0, 900, 700, nullptr, nullptr, hInstance, nullptr);
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+    if (!hWnd) return FALSE;
 
-    // WindowTool로 메인 윈도우 생성/표시 (템플릿 CreateWindow 대체)
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+
+    return TRUE;
+    /// WindowTool로 메인 윈도우 생성/표시 (템플릿 CreateWindowW 대체)
     gWindowTool = new WindowTool(hInstance);
-    if (!gWindowTool->createMainWindow(1000, 700))
-    {
+    if (!gWindowTool->createMainWindow(1000, 700)) {
         return FALSE;
     }
-
     gWindowTool->showWindow(nCmdShow);
     return TRUE;
+   }
+
+   ShowWindow(hWnd, nCmdShow);
+   UpdateWindow(hWnd);
+
+   return TRUE;
 }
 
 //
@@ -147,11 +160,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
     case WM_MOUSEMOVE:
-        HDC hdc;
         if (isDrawing && GetCapture() == hWnd) {   // 메인창이 캡처 보유시만 그리기
             int x = LOWORD(lParam), y = HIWORD(lParam);
             if (PtInRect(&g_canvasRect, { x, y })) {
-                hdc = GetDC(hWnd);
+                HDC hdc = GetDC(hWnd);
                 int thick = ColorBox::getThicknessNum(ColorBox::colorSelect);
                 HPEN hPen = CreatePen(PS_SOLID, thick, g_colorManager.GetColor());
                 HGDIOBJ oldPen = SelectObject(hdc, hPen);
@@ -160,14 +172,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 SelectObject(hdc, oldPen);
                 DeleteObject(hPen);
                 ReleaseDC(hWnd, hdc);
-            }
+        {
             PAINTSTRUCT ps;
-            hdc = BeginPaint(hWnd, &ps);
+            HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             EndPaint(hWnd, &ps);
         }
         break;
-        
+        /// WM_DESTROY에서 gWindowTool 삭제 고려
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
+            EndPaint(hWnd, &ps);
+        }
+        break;
     case WM_DESTROY:
         if (gWindowTool) { delete gWindowTool; gWindowTool = nullptr; }
         PostQuitMessage(0);
@@ -179,7 +197,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 
 }
-///한번 더 보고 문제 있으면 여기 수정
+
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {

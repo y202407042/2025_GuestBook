@@ -14,6 +14,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <!-- 헤더 -->
   <ItemGroup>
     <ClInclude Include="framework.h">
       <Filter>헤더 파일</Filter>
@@ -28,6 +29,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ColorBox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ColorBoxPanel.h">
@@ -45,13 +49,11 @@
     <ClInclude Include="FileLoad.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="DrawingManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ColorManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ColorPicker.h">
+
+    <ClInclude Include="DrawingManger.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="DrawPoints.h">
@@ -63,22 +65,12 @@
     <ClInclude Include="PenReplay.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PenStroke.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="PenStrokeDlglog.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="PenView.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CanvasBuffer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="DrawingManger.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+    <!-- Color 관련 헤더 추가 -->
   </ItemGroup>
+  <!-- 소스 -->
   <ItemGroup>
     <ClCompile Include="2025_GuestBook_1.cpp">
       <Filter>소스 파일</Filter>
@@ -87,6 +79,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ColorDrawDemo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ColorBoxPanel.cpp">
@@ -104,10 +99,11 @@
     <ClCompile Include="FileSave.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="DrawingManager.cpp">
+    <ClCompile Include="ColorManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ColorManager.cpp">
+
+    <ClCompile Include="DrawingManger.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DrawPoints.cpp">
@@ -116,19 +112,12 @@
     <ClCompile Include="PenReplay.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PenStroke.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PenStrokeDlglog.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="PenView.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="CanvasBuffer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+    <!-- Color 관련 소스 추가 -->
   </ItemGroup>
+  <!-- 리소스 -->
   <ItemGroup>
     <ResourceCompile Include="2025_GuestBook_1.rc">
       <Filter>리소스 파일</Filter>

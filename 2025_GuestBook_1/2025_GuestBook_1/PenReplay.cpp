@@ -65,9 +65,13 @@ void PenReplay::replayStart(const std::vector<PenData>& sourceBuffer, HWND hwnd)
     /// 핸들을 저장
     targetHwnd = hwnd;
     isReplaying.store(true);
+    isPaused.store(false);
 
+    if (rpThread.joinable())
+    {
+        rpThread.join();
+    }
     rpThread = std::thread(&PenReplay::replayThread, this);
-    rpThread.detach();
 }
 
 void PenReplay::replayPause()
@@ -80,4 +84,14 @@ void PenReplay::replayResume()
 {
     /// 재개
     isPaused.store(false);
+}
+
+void PenReplay::replayStop()
+{
+    isReplaying.store(false);
+
+    if (rpThread.joinable())
+    {
+        rpThread.join();
+    }
 }

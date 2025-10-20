@@ -26,7 +26,7 @@ public:
 	void replayThread();
 	void replayPause();
 	void replayResume();
-	void setTargetHwnd(HWND h) { targetHwnd = h; }
+	void replayStop();
 };
 
 
